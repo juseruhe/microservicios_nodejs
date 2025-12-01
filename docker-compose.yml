@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  mysql_roles:
+    image: mysql:8
+    container_name: mysql_roles
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME_ROLE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3308:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - db_roles:/var/lib/mysql
+
+  roles_service:
+    build: .
+    container_name: roles_service
+    restart: always
+    ports:
+      - "${PORT_ROLE}"
+    depends_on:
+      - mysql_roles
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME_ROLE}
+      - DB_PORT=${DB_PORT}
+
+volumes:
+  db_roles:
