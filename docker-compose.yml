@@ -28,16 +28,18 @@ services:
     restart: always
     working_dir: /app/roles
     ports:
-      - "3001:3000"
+      - "${PORT_ROLE}"
     depends_on:
       mysql_roles:
         condition: service_healthy
     environment:
-      DB_HOST: mysql_roles
+      DB_HOST: ${DB_HOST}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME_ROLE: ${DB_NAME_ROLE}
-      DB_PORT: 3306
+      DB_PORT: ${DB_PORT}
+      PORT_ROLE_HOST: ${PORT_ROLE_HOST}
+      API_KEY: ${API_KEY}
     networks:
       - roles-network
 

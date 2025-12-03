@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import roleRoutes from "./routes/role.routes.js";
+import { swaggerUiServe, swaggerUiSetup } from "./config/swagger.js";
+import { validateApiKey } from "./middlewares/apiKey.middleware.js";
 
 const app = express();
 
@@ -17,6 +19,10 @@ app.use(
 app.use(express.json());
 
 // Rutas del microservicio
-app.use("/roles", roleRoutes);
+app.use("/roles",validateApiKey, roleRoutes);
+
+
+// Ruta Swagger
+app.use("/api-docs", swaggerUiServe, swaggerUiSetup);
 
 export default app;
