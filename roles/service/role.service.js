@@ -1,4 +1,4 @@
-import { RoleRepository } from "../repositories/role.repository.js";
+import { RoleRepository } from "../repository/role.repository.js";
 
 export const RoleService = {
   getAllRoles() {
