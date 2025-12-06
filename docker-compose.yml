@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  mysql_roles:
+    image: mysql:8
+    container_name: mysql_roles
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME_ROLE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3308:3306"
+    volumes:
+      - db_roles:/var/lib/mysql
+    networks:
+      - roles-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  roles_service:
+    build: .
+    container_name: roles_service
+    restart: always
+    working_dir: /app/roles
+    ports:
+      - "${PORT_ROLE}"
+    depends_on:
+      mysql_roles:
+        condition: service_healthy
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME_ROLE: ${DB_NAME_ROLE}
+      DB_PORT: ${DB_PORT}
+      PORT_ROLE_HOST: ${PORT_ROLE_HOST}
+      API_KEY: ${API_KEY}
+    networks:
+      - roles-network
+
+volumes:
+  db_roles:
+
+networks:
+  roles-network:
+    driver: bridge
