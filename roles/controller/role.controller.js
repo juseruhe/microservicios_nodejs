@@ -32,17 +32,6 @@ import { RoleService } from "../service/role.service.js";
  *     responses:
  *       201:
  *         description: Rol creado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 name:
- *                   type: string
- *                   example: Administrador
  *
  * /roles/{id}:
  *   get:
@@ -57,19 +46,9 @@ import { RoleService } from "../service/role.service.js";
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID del rol a buscar
  *     responses:
  *       200:
  *         description: Rol encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 name:
- *                   type: string
  *       404:
  *         description: Rol no encontrado
  *
@@ -85,7 +64,6 @@ import { RoleService } from "../service/role.service.js";
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID del rol a actualizar
  *     requestBody:
  *       required: true
  *       content:
@@ -99,21 +77,35 @@ import { RoleService } from "../service/role.service.js";
  *     responses:
  *       200:
  *         description: Rol actualizado correctamente
+ *       404:
+ *         description: Rol no encontrado
+ *
+ *   delete:
+ *     summary: Eliminar un rol por ID
+ *     tags:
+ *       - Roles
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Rol eliminado correctamente
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 name:
+ *                 message:
  *                   type: string
- *                   example: Supervisor
+ *                   example: Rol eliminado correctamente
  *       404:
  *         description: Rol no encontrado
  */
-
 
 export const getRoles = async (req, res) => {
   const roles = await RoleService.getAllRoles();
@@ -152,6 +144,21 @@ export const updateRole = async (req, res) => {
     res.status(404).json({message: e.message});
   }
 }
+
+
+export const deleteRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await RoleService.deleteRole(id);
+
+    res.status(200).json(result);
+
+  } catch (e) {
+    res.status(404).json({ message: e.message });
+  }
+};
+
 
 
   export const hola = async (req, res) => {

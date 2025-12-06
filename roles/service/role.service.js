@@ -26,5 +26,16 @@ export const RoleService = {
     }
 
     return updatedRole;
+  },
+
+
+    async deleteRole(id) {
+    const deleted = await RoleRepository.delete(id);
+
+    if (!deleted) {
+      throw new Error("Rol no encontrado");
+    }
+
+    return { message: "Rol eliminado correctamente" };
   }
 }

@@ -26,4 +26,15 @@ async update(id, name) {
     return { id, name };
   },
 
+  async delete(id) {
+  const [result] = await pool.query("DELETE FROM roles WHERE id = ?", [id]);
+
+  if (result.affectedRows === 0) {
+    return false; // No existe el rol
+  }
+
+  return true; // Eliminado correctamente
+}
+
+
 }
