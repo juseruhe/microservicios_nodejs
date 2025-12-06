@@ -25,11 +25,27 @@ export async function runMigration() {
   }
 
   try {
+    // 🔍 Verificar si la tabla YA existe
+    const [exists] = await pool.query(`
+      SELECT COUNT(*) AS count
+      FROM information_schema.tables
+      WHERE table_schema = DATABASE()
+      AND table_name = 'roles'
+    `);
+
+    if (exists[0].count > 0) {
+      console.log("⚠️ La tabla 'roles' ya existe. No se ejecuta migración.");
+      return;
+    }
+
+    // ✔ Si no existe, ejecutar la migración
     const filePath = path.join(__dirname, "migrations", "001_create_roles_table.sql");
     const sql = fs.readFileSync(filePath, "utf8");
+
     await pool.query(sql);
-    console.log("Migración ejecutada correctamente.");
+    console.log("✅ Migración ejecutada correctamente.");
+
   } catch (error) {
-    console.error("Error ejecutando migración:", error);
+    console.error("❌ Error ejecutando migración:", error);
   }
 }
