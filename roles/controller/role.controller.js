@@ -32,6 +32,17 @@ import { RoleService } from "../service/role.service.js";
  *     responses:
  *       201:
  *         description: Rol creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 name:
+ *                   type: string
+ *                   example: Administrador
  *
  * /roles/{id}:
  *   get:
@@ -57,13 +68,52 @@ import { RoleService } from "../service/role.service.js";
  *               properties:
  *                 id:
  *                   type: integer
+ *                 name:
+ *                   type: string
+ *       404:
+ *         description: Rol no encontrado
+ *
+ *   put:
+ *     summary: Actualizar un rol por ID
+ *     tags:
+ *       - Roles
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del rol a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Nuevo nombre del rol
+ *     responses:
+ *       200:
+ *         description: Rol actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
  *                   example: 1
  *                 name:
  *                   type: string
- *                   example: Administrador
+ *                   example: Supervisor
  *       404:
  *         description: Rol no encontrado
  */
+
 
 export const getRoles = async (req, res) => {
   const roles = await RoleService.getAllRoles();
@@ -87,6 +137,21 @@ try{
   res.status(404).json({message: e.message});
 }
 };
+
+export const updateRole = async (req, res) => {
+
+  try{
+
+    const {id} = req.params;
+    const {name} = req.body;
+
+    const updatedRole = await RoleService.update(id, name);
+    res.status(201).json(updatedRole);
+
+  }catch(e){
+    res.status(404).json({message: e.message});
+  }
+}
 
 
   export const hola = async (req, res) => {

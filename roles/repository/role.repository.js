@@ -15,6 +15,15 @@ export const RoleRepository = {
     const [rows] = await pool.query("SELECT * FROM roles WHERE id = ?", [id]);
     return rows.length ? rows[0] : null;
 
-}
+},
+
+async update(id, name) {
+    const [result] = await pool.query("UPDATE roles SET name = ? WHERE id = ?", [name, id]);
+    if(result.affectedRows === 0) {
+      return null;
+    }
+
+    return { id, name };
+  },
 
 }

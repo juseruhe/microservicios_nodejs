@@ -5,9 +5,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "API Roles",
+      title: "Microservicios de Roles",
       version: "1.0.0",
-      description: "Documentación de la API de Roles",
+      description: "Documentación de los Microservicios de Roles",
     },
 
     // 🔐 Aquí agregamos la API KEY

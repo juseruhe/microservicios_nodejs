@@ -16,5 +16,15 @@ export const RoleService = {
       throw new Error('Role not found');
     }
     return role;
+  },
+
+  update(id, name) {
+    const updatedRole = RoleRepository.update(id, name);
+
+    if(!updatedRole){
+      throw new Error('Role not found');
+    }
+
+    return updatedRole;
   }
 }
