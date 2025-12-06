@@ -44,3 +44,9 @@ export const createRole = async (req, res) => {
   const role = await RoleService.createRole(name);
   res.status(201).json(role);
 };
+
+
+  export const hola = async (req, res) => {
+    const hola = await "Hola desde el servicio de roles";
+    res.status(201).json(hola);
+  };

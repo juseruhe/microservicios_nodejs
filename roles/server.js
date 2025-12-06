@@ -1,9 +1,9 @@
 import app from "./app.js";
-
+import { runMigration } from "./migrate.js"; 
 
 const PORT = process.env.PORT_ROLE_HOST;
 
-console.log("PORT:", PORT);
+await runMigration();
 
 app.listen(PORT, () => {
   console.log(`Servicio Roles corriendo en puerto ${PORT}`);
