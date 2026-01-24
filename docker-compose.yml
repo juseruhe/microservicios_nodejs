@@ -7,11 +7,10 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME_ROLE}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "3308:3306"
+      - "${DB_PORT_ROLE}:3306"
     volumes:
       - db_roles:/var/lib/mysql
     networks:
@@ -23,12 +22,12 @@ services:
       retries: 10
 
   roles_service:
-    build: .
+    build: ./roles
     container_name: roles_service
     restart: always
     working_dir: /app/roles
     ports:
-      - "${PORT_ROLE}"
+      - "${PORT_ROLE_HOST}:${PORT_ROLE}"
     depends_on:
       mysql_roles:
         condition: service_healthy
@@ -36,9 +35,30 @@ services:
       DB_HOST: ${DB_HOST}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME_ROLE: ${DB_NAME_ROLE}
+      DB_NAME: ${DB_NAME_ROLE}
       DB_PORT: ${DB_PORT}
-      PORT_ROLE_HOST: ${PORT_ROLE_HOST}
+      PORT: ${PORT_ROLE}
+      API_KEY: ${API_KEY}
+    networks:
+      - roles-network
+
+  permissions_service:
+    build: ./permissions
+    container_name: permissions_service
+    restart: always
+    working_dir: /app/permissions
+    ports:
+      - "${PORT_PERMISSION_HOST}:${PORT_PERMISSION}"
+    depends_on:
+      mysql_roles:
+        condition: service_healthy
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME_PERMISSION}
+      DB_PORT: ${DB_PORT}
+      PORT: ${PORT_PERMISSION}
       API_KEY: ${API_KEY}
     networks:
       - roles-network
