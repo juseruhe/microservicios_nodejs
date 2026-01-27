@@ -26,14 +26,15 @@ export async function runMigration() {
 
   try {
 
+        
+        // ✅ Crear base de datos si no existe
+        const dbName = process.env.DB_NAME;
+        await pool.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+        console.log(`✅ Base de datos '${dbName}' verificada/creada`);
     
-    // ✅ Crear base de datos si no existe
-    const dbName = process.env.DB_NAME;
-    await pool.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-    console.log(`✅ Base de datos '${dbName}' verificada/creada`);
+        // ✅ Usar la base de datos
+        await pool.query(`USE \`${dbName}\``);
 
-    // ✅ Usar la base de datos
-    await pool.query(`USE \`${dbName}\``);
 
 
     // 🔍 Verificar si la tabla YA existe
@@ -41,16 +42,16 @@ export async function runMigration() {
       SELECT COUNT(*) AS count
       FROM information_schema.tables
       WHERE table_schema = DATABASE()
-      AND table_name = 'roles'
+      AND table_name = 'role_permissions'
     `);
 
     if (exists[0].count > 0) {
-      console.log("⚠️ La tabla 'roles' ya existe. No se ejecuta migración.");
+      console.log("⚠️ La tabla 'role_permissions' ya existe. No se ejecuta migración.");
       return;
     }
 
     // ✔ Si no existe, ejecutar la migración
-    const filePath = path.join(__dirname, "migrations", "001_create_roles_table.sql");
+    const filePath = path.join(__dirname, "migrations", "001_create_role_permissions_table.sql");
     const sql = fs.readFileSync(filePath, "utf8");
 
     await pool.query(sql);
