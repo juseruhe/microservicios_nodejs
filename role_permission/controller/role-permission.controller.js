@@ -145,3 +145,137 @@ export const getRolePermissionById = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+
+/**
+ * @openapi
+ * /role-permissions:
+ *   get:
+ *     summary: Get all role-permission relations
+ *     tags:
+ *       - RolePermission
+ *     security:
+ *       - ApiKeyAuth: []
+ *     responses:
+ *       200:
+ *         description: List of role-permission relations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/RolePermissionResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+export const getRolePermissions = async (req, res) => {
+  try {
+    const permissions = await RolePermissionService.getAllRolePermissions();
+    res.json(permissions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * @openapi
+ * /role-permissions/{id}:
+ *   put:
+ *     summary: Update a role-permission relation
+ *     tags:
+ *       - RolePermission
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - roleId
+ *               - permissionId
+ *             properties:
+ *               roleId:
+ *                 type: integer
+ *                 example: 2
+ *               permissionId:
+ *                 type: integer
+ *                 example: 4
+ *     responses:
+ *       200:
+ *         description: Role-permission updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RolePermissionResponse'
+ *       400:
+ *         description: Invalid role or permission
+ *       404:
+ *         description: Role-permission not found
+ */
+
+export const updateRolePermission = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { roleId, permissionId } = req.body;
+
+    const result = await RolePermissionService.update(id, roleId, permissionId);
+    res.json(result);
+  } catch (error) {
+   res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+/**
+ * @openapi
+ * /role-permissions/{id}:
+ *   delete:
+ *     summary: Delete a role-permission relation
+ *     tags:
+ *       - RolePermission
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *     responses:
+ *       204:
+ *         description: Role-permission deleted successfully
+ *       404:
+ *         description: Role-permission not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+export const deleteRolePermission = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await RolePermissionService.delete(id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+
+

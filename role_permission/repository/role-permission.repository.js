@@ -40,6 +40,25 @@ export const RolePermissionRepository = {
     );
 
     return rows;
+  },
+
+  async update(id, roleId, permissionId) {
+    const [result] = await pool.query("UPDATE role_permissions SET role_id = ?, permission_id = ? WHERE id = ?", [roleId, permissionId, id]);
+    if(result.affectedRows === 0) {
+      return null;
+    }
+  },
+
+  
+    async delete(id) {
+    const [result] = await pool.query("DELETE FROM role_permissions WHERE id = ?", [id]);
+  
+    if (result.affectedRows === 0) {
+      return false; // No existe el rol-permission
+    }
+  
+    return true; // Eliminado correctamente
   }
+  
 
 }
